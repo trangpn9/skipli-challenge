@@ -1,0 +1,39 @@
+{
+  "name": "backend-skipli-challenge-trangpn90",
+  "version": "1.0.0",
+  "description": "RESTful api app generate OTP via Twilio using database on Firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --inspect index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trangpn9/backend-skipli-challenge-trangpn90.git"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs",
+    "otp",
+    "twilio",
+    "firebase"
+  ],
+  "author": "trangpn90",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trangpn9/backend-skipli-challenge-trangpn90/issues"
+  },
+  "homepage": "https://github.com/trangpn9/backend-skipli-challenge-trangpn90#readme",
+  "dependencies": {
+    "body-parser": "1.20.1",
+    "cors": "2.8.5",
+    "dotenv": "16.0.3",
+    "express": "4.18.2",
+    "firebase": "9.17.1",
+    "twilio": "3.84.1"
+  },
+  "devDependencies": {
+    "morgan": "1.10.0",
+    "nodemon": "2.0.20"
+  }
+}
