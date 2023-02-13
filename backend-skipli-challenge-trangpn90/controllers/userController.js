@@ -41,8 +41,8 @@ const addUser = async (req, res, next) => {
     // send opt via twilio
     client.messages
       .create({
-        body: `Your Access Code: ${otp}`,
-        from: your-phone-number-of-twilio,
+        body: `SKIPLI app - Your Access Code: ${otp}`,
+        from: "+12624255115",
         to: phoneNumber,
       })
       .then((messages) => console.log(messages))
@@ -101,7 +101,7 @@ const likeGithubUser = async (req, res, next) => {
   }
 };
 
-// service like github user
+// service dislike github user
 const dislikeGithubUser = async (req, res, next) => {
   try {
     const { phoneNumber, githubUserId } = req.body;
@@ -121,10 +121,20 @@ const getUserProfile = async (req, res, next) => {
     const { phoneNumber } = req.params;
     const userRef = doc(db, "users", phoneNumber);
     const userSnap = await getDoc(userRef);
-    const { favoriteGithubUsers } = userSnap.data();
-    res.status(200).json({
-      data: favoriteGithubUsers,
-    });
+    if (userSnap.data()) {
+      const { favoriteGithubUsers } = userSnap.data();
+      res.status(200).json({
+        code: "2200",
+        data: favoriteGithubUsers,
+        message: "success"
+      });
+    } else {
+      res.status(200).json({
+        code: "2404",
+        data: [],
+        message: "User not found!"
+      });
+    }
   } catch (error) {
     res.status(400).send(error.message);
   }

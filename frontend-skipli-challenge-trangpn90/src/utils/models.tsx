@@ -4,5 +4,10 @@ export interface IFormInput {
 }
 
 export interface IHeader {
-  onSetShowResult: (val:boolean) => void;
+  onSetShowResult: (val: boolean) => void;
+}
+
+export interface IModal {
+  show: boolean;
+  setShow: (val: boolean) => void;
 }

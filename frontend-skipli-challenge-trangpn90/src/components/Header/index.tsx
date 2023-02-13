@@ -1,37 +1,48 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { IHeader } from "../../utils/models";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import CusModal from "../CusModal";
 
 const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
   const [txtSearch, setTxtSearch] = useState("");
   const { setState } = useGlobalContext();
   const { removeItem } = useLocalStorage();
+  const [show, setShow] = useState(false);
+  const txtSearchGitUser = useRef<HTMLInputElement>(null);
 
-  const handleShowResult = () => {
+  const handleShowResult = (page = 1, perPage = 10) => {
     axios({
       method: "get",
       url: "https://api.github.com/search/users",
       params: {
         q: txtSearch,
-        page: 1,
-        per_page: 10
+        page: page,
+        per_page: perPage
       },
     })
       .then(function (response) {
         // console.log("data user github: ", response.data);
         setState((preState) => ({
-          ...preState, itemUserGithub: response.data?.items 
+          ...preState, itemUserGithub: response.data?.items
         }));
+        if (txtSearchGitUser.current) {
+          txtSearchGitUser.current.value = "";
+          // txtSearchGitUser.current.focus();
+        }
       })
       .catch(function (error) {
         console.log(error);
       });
     onSetShowResult(true);
   };
+
+  const handleGetUserProfile = () => {
+    setShow(true);
+  }
 
   const handleLogout = () => {
     setState((preState) => ({
@@ -74,22 +85,24 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
                 type="text  "
                 placeholder="Search"
                 aria-label="Search"
+                ref={txtSearchGitUser}
                 onChange={(e) => setTxtSearch(e.target.value)}
               />
               <button
                 className="btn btn-danger"
                 type="button"
-                onClick={handleShowResult}
+                onClick={() => handleShowResult()}
               >
                 Search
               </button>
             </form>
-            <button className="btn" type="submit">
+            <button className="btn" type="submit" onClick={handleGetUserProfile}>
               <FontAwesomeIcon icon={faUser} color="#fff" />
             </button>
           </div>
         </div>
       </nav>
+      <CusModal show={show} setShow={setShow} />
     </header>
   );
 };
