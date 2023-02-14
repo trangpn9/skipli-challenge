@@ -125,13 +125,13 @@ const getUserProfile = async (req, res, next) => {
       const { favoriteGithubUsers } = userSnap.data();
       res.status(200).json({
         code: "2200",
-        data: favoriteGithubUsers,
+        favoriteGithubUsers,
         message: "success"
       });
     } else {
       res.status(200).json({
         code: "2404",
-        data: [],
+        favoriteGithubUsers: [],
         message: "User not found!"
       });
     }

@@ -10,7 +10,7 @@ import CusModal from "../CusModal";
 const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
   const [txtSearch, setTxtSearch] = useState("");
   const { setState } = useGlobalContext();
-  const { removeItem } = useLocalStorage();
+  const { getItem, removeItem } = useLocalStorage();
   const [show, setShow] = useState(false);
   const txtSearchGitUser = useRef<HTMLInputElement>(null);
 
@@ -41,6 +41,16 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
   };
 
   const handleGetUserProfile = () => {
+    axios({
+      method: "get",
+      url: `http://localhost:3600/api/user/${getItem("user")}`,
+    })
+      .then(function (response) {
+        console.log("user profile: ", response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     setShow(true);
   }
 
