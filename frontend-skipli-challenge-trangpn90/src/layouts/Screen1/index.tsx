@@ -80,10 +80,10 @@ const Screen1 = (): React.ReactElement => {
       .then(function (response) {
         const {code, message} = response.data;
         if (code === '2200') {
-          setState(preState => ({...preState, isAuth: true, isShowToast: true, contentToast: message, typeToast: "Success"}));
+          setState(preState => ({...preState, user: phoneNumber, isAuth: true, isShowToast: true, contentToast: message, typeToast: "Success"}));
           setItem("user", phoneNumber);
         } else if (code === '2403') {
-          setState(preState => ({...preState, isAuth: false, isShowToast: true, contentToast: message, typeToast: "Danger"}));
+          setState(preState => ({...preState, user: null, isAuth: false, isShowToast: true, contentToast: message, typeToast: "Danger"}));
         }
       })
       .catch(function (error) {

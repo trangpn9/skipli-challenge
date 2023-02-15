@@ -8,7 +8,8 @@ export interface IHeader {
 }
 
 export interface IModal {
-  title?: string;
+  title?: string | null | undefined;
   show: boolean;
+  content: any;
   setShow: (val: boolean) => void;
 }

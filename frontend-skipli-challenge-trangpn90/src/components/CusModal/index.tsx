@@ -2,19 +2,19 @@ import React from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import { IModal } from '../../utils/models';
 
-const CusModal = ({title = "Notifications", show, setShow}: IModal): React.ReactElement => {
+const CusModal = ({title = "Notifications", content, show, setShow}: IModal): React.ReactElement => {
   const handleClose = () => {
     setShow(false);
   }
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} content={content} onHide={handleClose} size="lg">
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <p>contentBody</p>
+        <p>{content}</p>
       </Modal.Body>
 
       <Modal.Footer>

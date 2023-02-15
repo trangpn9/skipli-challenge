@@ -9,48 +9,43 @@ import CusModal from "../CusModal";
 
 const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
   const [txtSearch, setTxtSearch] = useState("");
-  const { setState } = useGlobalContext();
-  const { getItem, removeItem } = useLocalStorage();
+  const { setState, state } = useGlobalContext();
+  const { removeItem } = useLocalStorage();
   const [show, setShow] = useState(false);
   const txtSearchGitUser = useRef<HTMLInputElement>(null);
 
   const handleShowResult = (page = 1, perPage = 10) => {
-    axios({
-      method: "get",
-      url: "https://api.github.com/search/users",
-      params: {
-        q: txtSearch,
-        page: page,
-        per_page: perPage
-      },
-    })
-      .then(function (response) {
-        // console.log("data user github: ", response.data);
-        setState((preState) => ({
-          ...preState, itemUserGithub: response.data?.items
-        }));
-        if (txtSearchGitUser.current) {
-          txtSearchGitUser.current.value = "";
-          // txtSearchGitUser.current.focus();
-        }
+    if (txtSearch !== '' && txtSearch !== null) {
+      axios({
+        method: "get",
+        url: "https://api.github.com/search/users",
+        params: {
+          q: txtSearch,
+          page,
+          per_page: perPage
+        },
       })
-      .catch(function (error) {
-        console.log(error);
-      });
-    onSetShowResult(true);
+        .then(function (response) {
+          // console.log("data user github: ", response.data);
+          setState((preState) => ({
+            ...preState, itemUserGithub: response.data?.items
+          }));
+          if (txtSearchGitUser.current) {
+            txtSearchGitUser.current.value = "";
+            // txtSearchGitUser.current.focus();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      onSetShowResult(true);
+    } 
+    setTxtSearch('');
   };
 
   const handleGetUserProfile = () => {
-    axios({
-      method: "get",
-      url: `http://localhost:3600/api/user/${getItem("user")}`,
-    })
-      .then(function (response) {
-        console.log("user profile: ", response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    console.log("favoriteGithubUsers: ", state.favoriteGithubUsers);
+
     setShow(true);
   }
 
@@ -95,6 +90,7 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
                 type="text  "
                 placeholder="Search"
                 aria-label="Search"
+                value={txtSearch}
                 ref={txtSearchGitUser}
                 onChange={(e) => setTxtSearch(e.target.value)}
               />
@@ -112,7 +108,7 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
           </div>
         </div>
       </nav>
-      <CusModal show={show} setShow={setShow} />
+      <CusModal title={`User: ${state.user}`} content={state.favoriteGithubUsers} show={show} setShow={setShow} />
     </header>
   );
 };

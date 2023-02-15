@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import axios from "axios";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import { Pagination } from "react-bootstrap";
 
 const Screen2 = (): React.ReactElement => {
   const [showResult, setShowResult] = useState(false);
@@ -35,58 +36,48 @@ const Screen2 = (): React.ReactElement => {
       <Header onSetShowResult={setShowResult} />
       {showResult && (
         <main className="container">
-          <div className="table-responsive mt-4">
-            <table className="table text-center">
-              <thead>
-                <tr>
-                  <th style={{ width: "5%" }}>id</th>
-                  <th style={{ width: "5%" }}>login</th>
-                  <th style={{ width: "8%" }}>avatar_url</th>
-                  <th style={{ width: "8%" }}>html_url</th>
-                  <th style={{ width: "8%" }}>public_repos</th>
-                  <th style={{ width: "8%" }}>followers</th>
-                  <th style={{ width: "8%" }}>actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {state.itemUserGithub?.map((item) => (
-                  <tr key={item["id"]}>
-                    <th scope="row" className="text-start">
-                      {item["id"]}
-                    </th>
-                    <td>{item["login"]}</td>
-                    <td>
-                      <img
-                        src={item["avatar_url"]}
-                        className="img-thumbnail"
-                        alt={item["login"]}
-                        width={50}
-                      />
-                    </td>
-                    <td>{item["html_url"]}</td>
-                    <td>
-                      <a href={item["repos_url"]} target="blank">
-                        Public repos
-                      </a>
-                    </td>
-                    <td>
-                      <a href={item["following_url"]} target="blank">
-                        Followers
-                      </a>
-                    </td>
-                    <td>
-                      <button
-                        className="btn"
-                        type="submit"
-                        onClick={() => handleLikeProfile(item["id"])}
-                      >
-                        <FontAwesomeIcon icon={faHeart} color="green" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="row row-cols-2 row-cols-md-5 g-4 my-4">
+            {state.itemUserGithub?.map((item) => (
+              <div className="col" key={item["id"]}>
+                <div className="card h-100">
+                  <img src={item["avatar_url"]} className="card-img-top" alt={item["login"]} />
+                  <div className="card-body">
+                    <h5 className="card-title">{item["login"]}</h5>
+                    <a href={item["html_url"]} target="_blank">Link</a>
+                  </div>
+                  <div className="card-footer">
+                    <button
+                      className="btn"
+                      type="submit"
+                      onClick={() => handleLikeProfile(item["id"])}
+                    >
+                      <FontAwesomeIcon icon={faHeart} color="green" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <div className="d-flex justify-content-center">
+            <Pagination>
+              <Pagination.First />
+              <Pagination.Prev />
+              <Pagination.Item>{1}</Pagination.Item>
+              <Pagination.Ellipsis />
+
+              <Pagination.Item>{10}</Pagination.Item>
+              <Pagination.Item>{11}</Pagination.Item>
+              <Pagination.Item active>{12}</Pagination.Item>
+              <Pagination.Item>{13}</Pagination.Item>
+              <Pagination.Item disabled>{14}</Pagination.Item>
+
+              <Pagination.Ellipsis />
+              <Pagination.Item>{20}</Pagination.Item>
+              <Pagination.Next />
+              <Pagination.Last />
+            </Pagination>
           </div>
         </main>
       )}

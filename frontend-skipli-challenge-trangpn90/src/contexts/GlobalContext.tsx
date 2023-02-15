@@ -1,4 +1,6 @@
-import React, { Dispatch, SetStateAction, createContext, useState, useContext } from 'react'
+import React, { Dispatch, SetStateAction, createContext, useState, useContext, useEffect } from 'react'
+import axios from 'axios';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 export interface IGlobalState {
   isAuth: boolean;
@@ -6,6 +8,8 @@ export interface IGlobalState {
   contentToast: string;
   typeToast: string;
   itemUserGithub: [];
+  user: string | null | undefined;
+  favoriteGithubUsers: [];
 }
 
 const GlobalContext = createContext({
@@ -15,7 +19,24 @@ const GlobalContext = createContext({
 
 
 const GlobalProvider = ({ children, value = {} as IGlobalState, }: { children: React.ReactNode; value?: Partial<IGlobalState>; }) => {
-  const [state, setState] = useState(value)
+  const [state, setState] = useState(value);
+  const { getItem } = useLocalStorage();
+
+  useEffect(() => {
+    if(getItem("user")) {
+      axios({
+        method: "get",
+        url: `http://localhost:3600/api/user/${getItem("user")}`,
+      })
+        .then(function (response) {
+          const {favoriteGithubUsers} =  response.data;
+          setState((preState) => ({...preState, user: getItem("user"), favoriteGithubUsers}));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, []);
 
   return (
     <GlobalContext.Provider value={{ state, setState }}>
