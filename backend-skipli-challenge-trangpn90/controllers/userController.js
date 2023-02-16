@@ -89,8 +89,11 @@ const likeGithubUser = async (req, res, next) => {
   try {
     const { phoneNumber, githubUserId } = req.body;
     const userRef = doc(db, "users", phoneNumber);
+    const userSnap = await getDoc(userRef);
+    const { favoriteGithubUsers } = userSnap.data();
     await updateDoc(userRef, {
-      favoriteGithubUsers: arrayUnion(githubUserId),
+      // favoriteGithubUsers: arrayUnion(githubUserId),
+      favoriteGithubUsers: [githubUserId, ...favoriteGithubUsers],
     });
     res.status(200).json({
       code: "2200",
@@ -126,13 +129,13 @@ const getUserProfile = async (req, res, next) => {
       res.status(200).json({
         code: "2200",
         favoriteGithubUsers,
-        message: "success"
+        message: "success",
       });
     } else {
       res.status(200).json({
         code: "2404",
         favoriteGithubUsers: [],
-        message: "User not found!"
+        message: "User not found!",
       });
     }
   } catch (error) {
