@@ -1,5 +1,6 @@
 "use strict";
 const User = require("../models/user");
+const axios = require("axios");
 const app = require("../firebase");
 const {
   getFirestore,
@@ -92,8 +93,8 @@ const likeGithubUser = async (req, res, next) => {
     const userSnap = await getDoc(userRef);
     const { favoriteGithubUsers } = userSnap.data();
     await updateDoc(userRef, {
-      // favoriteGithubUsers: arrayUnion(githubUserId),
-      favoriteGithubUsers: [githubUserId, ...favoriteGithubUsers],
+      favoriteGithubUsers: arrayUnion(githubUserId),
+      // favoriteGithubUsers: [githubUserId, ...favoriteGithubUsers],
     });
     res.status(200).json({
       code: "2200",
@@ -126,9 +127,24 @@ const getUserProfile = async (req, res, next) => {
     const userSnap = await getDoc(userRef);
     if (userSnap.data()) {
       const { favoriteGithubUsers } = userSnap.data();
+      const promisesGetProfile = favoriteGithubUsers.map((userID) => {
+        return axios.get(`https://api.github.com/user/${userID}`)
+      });
+      const resProfileData = [];
+      await axios.all(promisesGetProfile).then(
+        axios.spread((...res) => {
+          for (let i = 0; i < res.length; i++) {
+            resProfileData.push(res[i].data)
+          }
+          return resProfileData
+        })
+      ).catch(err => {
+        console.log("Err promise get all like profile: ", err.message);
+      });
+
       res.status(200).json({
         code: "2200",
-        favoriteGithubUsers,
+        favoriteGithubUsers: resProfileData,
         message: "success",
       });
     } else {

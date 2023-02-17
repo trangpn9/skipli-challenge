@@ -23,20 +23,24 @@ const GlobalProvider = ({ children, value = {} as IGlobalState, }: { children: R
   const { getItem } = useLocalStorage();
 
   useEffect(() => {
-    if(getItem("user")) {
-      axios({
-        method: "get",
-        url: `http://localhost:3600/api/user/${getItem("user")}`,
-      })
-        .then(function (response) {
-          const {favoriteGithubUsers} =  response.data;
-          setState((preState) => ({...preState, user: getItem("user"), favoriteGithubUsers}));
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    if (getItem("user")) {
+      setState((preState) => ({ ...preState, user: getItem("user") }));
+      // axios({
+      //   method: "get",
+      //   url: `http://localhost:3600/api/user/${getItem("user")}`,
+      // })
+      //   .then(function (response) {
+      //     const {favoriteGithubUsers} =  response.data;
+      //     setState((preState) => ({...preState, user: getItem("user"), favoriteGithubUsers}));
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
     }
   }, []);
+
+  console.log("Global state render.");
+
 
   return (
     <GlobalContext.Provider value={{ state, setState }}>

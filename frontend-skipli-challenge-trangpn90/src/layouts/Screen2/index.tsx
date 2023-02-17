@@ -17,7 +17,7 @@ const Screen2 = (): React.ReactElement => {
       method: "put",
       url: "http://localhost:3600/api/user/like-github",
       data: {
-        phoneNumber: getItem("user"), githubUserId: idProfile
+        phoneNumber: state.user, githubUserId: idProfile
       },
     })
       .then(function (response) {
@@ -30,6 +30,25 @@ const Screen2 = (): React.ReactElement => {
         console.log(error);
       });
   };
+
+  const handleDislikeProfile = (idProfile: string) => {
+    axios({
+      method: "put",
+      url: "http://localhost:3600/api/user/dislike-github",
+      data: {
+        phoneNumber: state.user, githubUserId: idProfile
+      },
+    })
+      .then(function (response) {
+        const { code, message } = response.data;
+        if (code === '2200') {
+          setState(preState => ({ ...preState, isShowToast: true, contentToast: message, typeToast: "Success" }));
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };  
 
   return (
     <div id="screen2">
@@ -52,6 +71,13 @@ const Screen2 = (): React.ReactElement => {
                       onClick={() => handleLikeProfile(item["id"])}
                     >
                       <FontAwesomeIcon icon={faHeart} color="green" />
+                    </button>
+                    <button
+                      className="btn"
+                      type="submit"
+                      onClick={() => handleDislikeProfile(item["id"])}
+                    >
+                      <FontAwesomeIcon icon={faHeartBroken} color="red" />
                     </button>
                   </div>
                 </div>

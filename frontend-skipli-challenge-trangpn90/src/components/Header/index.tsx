@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +13,12 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
   const { removeItem } = useLocalStorage();
   const [show, setShow] = useState(false);
   const txtSearchGitUser = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (state.user) {
+
+    }
+  }, [state.user]);
 
   const handleShowResult = (page = 1, perPage = 10) => {
     if (txtSearch !== '' && txtSearch !== null) {
@@ -39,14 +45,26 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
           console.log(error);
         });
       onSetShowResult(true);
-    } 
+    }
     setTxtSearch('');
   };
 
-  const handleGetUserProfile = () => {
+  const handleGetUserProfile = async () => {
+    console.log("user: ", state.user);
+    
+    await axios({
+      method: "get",
+      url: `http://localhost:3600/api/user/${state.user}`,
+    })
+      .then(function (response) {
+        const { favoriteGithubUsers } = response.data;
+        setState((preState) => ({ ...preState, user: state.user, favoriteGithubUsers }));
+        setShow(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     console.log("favoriteGithubUsers: ", state.favoriteGithubUsers);
-
-    setShow(true);
   }
 
   const handleLogout = () => {
@@ -108,7 +126,7 @@ const Header = ({ onSetShowResult }: IHeader): React.ReactElement => {
           </div>
         </div>
       </nav>
-      <CusModal title={`User: ${state.user}`} content={state.favoriteGithubUsers} show={show} setShow={setShow} />
+      <CusModal title={`User: ${state.user}`} content={state?.favoriteGithubUsers} show={show} setShow={setShow} />
     </header>
   );
 };
